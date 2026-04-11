@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: backend-music-player
+    runtime: docker
+    repo: https://github.com/KevinTimaran/backend-music-player
+    branch: main
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "10000"
+
