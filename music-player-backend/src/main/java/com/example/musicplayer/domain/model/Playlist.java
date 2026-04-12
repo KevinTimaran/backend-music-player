@@ -9,14 +9,36 @@ public class Playlist {
 
     public void addFirst(Song song) {
         validateSong(song);
-        // TODO: Implement playlist insertion at start.
-        throw new UnsupportedOperationException("addFirst is not implemented yet.");
+        SongNode newNode = new SongNode(song);
+
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+            current = newNode;
+        } else {
+            newNode.setNext(head);
+            head.setPrev(newNode);
+            head = newNode;
+        }
+
+        size++;
     }
 
     public void addLast(Song song) {
         validateSong(song);
-        // TODO: Implement playlist insertion at end.
-        throw new UnsupportedOperationException("addLast is not implemented yet.");
+        SongNode newNode = new SongNode(song);
+
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+            current = newNode;
+        } else {
+            newNode.setPrev(tail);
+            tail.setNext(newNode);
+            tail = newNode;
+        }
+
+        size++;
     }
 
     public void addAt(Song song, int position) {
