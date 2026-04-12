@@ -1,11 +1,13 @@
 package com.example.musicplayer.config;
 
 import com.example.musicplayer.domain.external.MusicDownloadAPI;
+import com.example.musicplayer.domain.external.SongReference;
 import com.example.musicplayer.domain.model.Playlist;
 import com.example.musicplayer.domain.player.IMusicPlayer;
 import com.example.musicplayer.domain.player.LocalAudioPlayer;
 import com.example.musicplayer.domain.theme.DefaultThemeStrategy;
 import com.example.musicplayer.domain.theme.IThemeStrategy;
+import com.example.musicplayer.service.PlayerService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,11 +31,27 @@ public class AppConfig {
 
     @Bean
     public MusicDownloadAPI musicDownloadAPI() {
-        return queryOrUrl -> {
-            // TODO: Integrate remote song reference provider.
-            return null;
+        return new MusicDownloadAPI() {
+            @Override
+            public SongReference requestSongReference(String queryOrUrl) {
+                String normalizedQuery =
+                        (queryOrUrl == null || queryOrUrl.isBlank()) ? "unknown" : queryOrUrl.trim();
+
+                return new SongReference(
+                        normalizedQuery,
+                        "Unknown Artist",
+                        "https://source.test/" + normalizedQuery,
+                        "https://source.test/default-cover.jpg");
+            }
         };
     }
+
+    @Bean
+    public PlayerService playerService(
+            Playlist playlist,
+            IMusicPlayer musicPlayer,
+            IThemeStrategy themeStrategy,
+            MusicDownloadAPI musicDownloadAPI) {
+        return new PlayerService(playlist, musicPlayer, themeStrategy, musicDownloadAPI);
+    }
 }
-
-

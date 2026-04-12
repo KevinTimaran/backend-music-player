@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,13 +18,35 @@ class PlaylistTest {
     }
 
     @Test
-    void addFirstWithValidSongThrowsUnsupportedUntilImplemented() {
+    void addFirstWithValidSongAddsSongAtHead() {
         Song song = createSong();
 
-        UnsupportedOperationException exception =
-                assertThrows(UnsupportedOperationException.class, () -> playlist.addFirst(song));
+        playlist.addFirst(song);
 
-        assertNotNull(exception.getMessage());
+        assertFalse(playlist.isEmpty());
+        assertEquals(1, playlist.getSize());
+        assertEquals(song, playlist.getFirstSong());
+        assertEquals(song, playlist.getCurrentSong());
+        assertTrue(playlist.contains(song.getId()));
+    }
+
+    @Test
+    void addFirstWithTwoSongsUpdatesHeadTailAndCurrentCorrectly() {
+        Song firstInserted = createSong("song-1", "First Song");
+        Song secondInserted = createSong("song-2", "Second Song");
+
+        playlist.addFirst(firstInserted);
+        playlist.addFirst(secondInserted);
+
+        assertEquals(2, playlist.getSize());
+        assertEquals(secondInserted, playlist.getFirstSong());
+        assertEquals(firstInserted, playlist.getLastSong());
+        assertEquals(firstInserted, playlist.getCurrentSong());
+
+        Song[] songs = playlist.toArray();
+        assertEquals(2, songs.length);
+        assertEquals(secondInserted, songs[0]);
+        assertEquals(firstInserted, songs[1]);
     }
 
     @Test
@@ -57,9 +78,13 @@ class PlaylistTest {
     }
 
     private Song createSong() {
+        return createSong("song-id", "Song Title");
+    }
+
+    private Song createSong(String id, String title) {
         return new Song(
-                "song-id",
-                "Song Title",
+                id,
+                title,
                 180,
                 "Artist",
                 "https://source.test/song.mp3",

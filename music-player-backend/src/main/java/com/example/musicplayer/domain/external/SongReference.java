@@ -1,11 +1,11 @@
-package com.example.musicplayer.domain.model;
+package com.example.musicplayer.domain.external;
 
 public class SongReference {
 
-    private final String title;
-    private final String artist;
-    private final String sourceUrl;
-    private final String coverUrl;
+    private String title;
+    private String artist;
+    private String sourceUrl;
+    private String coverUrl;
 
     public SongReference(String title, String artist, String sourceUrl, String coverUrl) {
         this.title = title;
@@ -30,4 +30,5 @@ public class SongReference {
         return coverUrl;
     }
 }
+
 
