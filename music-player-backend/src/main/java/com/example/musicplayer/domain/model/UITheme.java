@@ -2,10 +2,10 @@ package com.example.musicplayer.domain.model;
 
 public class UITheme {
 
-    private final String primaryColor;
-    private final String secondaryColor;
-    private final String accentColor;
-    private final String backgroundColor;
+    private String primaryColor;
+    private String secondaryColor;
+    private String accentColor;
+    private String backgroundColor;
 
     public UITheme(String primaryColor, String secondaryColor, String accentColor, String backgroundColor) {
         this.primaryColor = primaryColor;

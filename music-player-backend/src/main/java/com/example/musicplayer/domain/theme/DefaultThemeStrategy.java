@@ -7,8 +7,11 @@ public class DefaultThemeStrategy implements IThemeStrategy {
 
     @Override
     public UITheme generateTheme(Song song) {
-        // TODO: Implement default theme generation.
-        return null;
+        if (song == null) {
+            throw new IllegalArgumentException("Song must not be null.");
+        }
+
+        return new UITheme("#1DB954", "#191414", "#FFFFFF", "#121212");
     }
 }
 

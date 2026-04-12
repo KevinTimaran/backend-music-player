@@ -3,83 +3,133 @@ package com.example.musicplayer.service;
 import com.example.musicplayer.domain.external.MusicDownloadAPI;
 import com.example.musicplayer.domain.model.Playlist;
 import com.example.musicplayer.domain.model.Song;
+import com.example.musicplayer.domain.model.UITheme;
 import com.example.musicplayer.domain.player.IMusicPlayer;
 import com.example.musicplayer.domain.theme.IThemeStrategy;
-import org.springframework.stereotype.Service;
 
-@Service
 public class PlayerService {
 
     private final Playlist playlist;
-    private IMusicPlayer musicPlayer;
+    private final IMusicPlayer player;
     private IThemeStrategy themeStrategy;
-    private final MusicDownloadAPI musicDownloadAPI;
+    private final MusicDownloadAPI downloadService;
 
     public PlayerService(
             Playlist playlist,
-            IMusicPlayer musicPlayer,
+            IMusicPlayer player,
             IThemeStrategy themeStrategy,
-            MusicDownloadAPI musicDownloadAPI) {
+            MusicDownloadAPI downloadService) {
+        if (playlist == null) {
+            throw new IllegalArgumentException("Playlist must not be null.");
+        }
+        if (player == null) {
+            throw new IllegalArgumentException("Player must not be null.");
+        }
+        if (themeStrategy == null) {
+            throw new IllegalArgumentException("Theme strategy must not be null.");
+        }
+
         this.playlist = playlist;
-        this.musicPlayer = musicPlayer;
+        this.player = player;
         this.themeStrategy = themeStrategy;
-        this.musicDownloadAPI = musicDownloadAPI;
+        this.downloadService = downloadService;
     }
 
     public void addSongToStart(Song song) {
-        // TODO: Implement service orchestration.
+        playlist.addFirst(song);
     }
 
     public void addSongToEnd(Song song) {
-        // TODO: Implement service orchestration.
+        playlist.addLast(song);
     }
 
     public void addSongToPosition(Song song, int position) {
-        // TODO: Implement service orchestration.
+        playlist.addAt(song, position);
     }
 
     public void deleteSongById(String songId) {
-        // TODO: Implement service orchestration.
+        playlist.removeById(songId);
     }
 
     public void deleteSongAt(int position) {
-        // TODO: Implement service orchestration.
+        playlist.removeAt(position);
     }
 
     public void moveSong(int fromPosition, int toPosition) {
-        // TODO: Implement service orchestration.
+        playlist.move(fromPosition, toPosition);
     }
 
     public void playCurrent() {
-        // TODO: Implement service orchestration.
+        Song song = playlist.getCurrentSong();
+        if (song != null) {
+            player.play(song);
+        }
     }
 
-    public void playNext() {
-        // TODO: Implement service orchestration.
+    public Song playNext() {
+        Song song = playlist.nextSong();
+        if (song != null) {
+            player.play(song);
+        }
+        return song;
     }
 
-    public void playPrevious() {
-        // TODO: Implement service orchestration.
+    public Song playPrevious() {
+        Song song = playlist.previousSong();
+        if (song != null) {
+            player.play(song);
+        }
+        return song;
     }
 
     public void pausePlayback() {
-        // TODO: Implement service orchestration.
+        player.pause();
     }
 
     public void resumePlayback() {
-        // TODO: Implement service orchestration.
+        player.resume();
     }
 
     public void stopPlayback() {
-        // TODO: Implement service orchestration.
+        player.stop();
     }
 
-    public void selectSong(int position) {
-        // TODO: Implement service orchestration.
+    public Song selectSong(int position) {
+        playlist.setCurrent(position);
+        Song song = playlist.getCurrentSong();
+        if (song != null) {
+            player.play(song);
+        }
+        return song;
     }
 
     public void changeThemeStrategy(IThemeStrategy strategy) {
-        // TODO: Implement strategy switching.
+        if (strategy == null) {
+            throw new IllegalArgumentException("Theme strategy must not be null.");
+        }
+
+        themeStrategy = strategy;
+    }
+
+    public UITheme getThemeForCurrentSong() {
+        Song song = playlist.getCurrentSong();
+        if (song == null) {
+            return null;
+        }
+
+        return themeStrategy.generateTheme(song);
+    }
+
+    public Song[] getPlaylistSongs() {
+        return playlist.toArray();
+    }
+
+    public Song getCurrentSong() {
+        return playlist.getCurrentSong();
+    }
+
+    public String getPlayerStatus() {
+        return player.getStatus();
     }
 }
 

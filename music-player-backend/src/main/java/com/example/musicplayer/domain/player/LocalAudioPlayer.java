@@ -6,36 +6,63 @@ public class LocalAudioPlayer implements IMusicPlayer {
 
     private Song currentSong;
     private double volume;
+    private String status;
+
+    public LocalAudioPlayer() {
+        this.volume = 50.0;
+        this.status = "STOPPED";
+    }
 
     @Override
     public void play(Song song) {
-        // TODO: Implement local audio playback.
+        if (song == null) {
+            throw new IllegalArgumentException("Song must not be null.");
+        }
+
+        currentSong = song;
+        status = "PLAYING";
     }
 
     @Override
     public void pause() {
-        // TODO: Implement local audio pause.
+        if ("PLAYING".equals(status)) {
+            status = "PAUSED";
+        }
     }
 
     @Override
     public void resume() {
-        // TODO: Implement local audio resume.
+        if ("PAUSED".equals(status)) {
+            status = "PLAYING";
+        }
     }
 
     @Override
     public void stop() {
-        // TODO: Implement local audio stop.
+        status = "STOPPED";
+        currentSong = null;
     }
 
     @Override
     public void setVolume(double volume) {
-        // TODO: Implement local audio volume control.
+        if (volume < 0 || volume > 100) {
+            throw new IllegalArgumentException("Volume must be between 0 and 100.");
+        }
+
+        this.volume = volume;
     }
 
     @Override
     public String getStatus() {
-        // TODO: Implement status retrieval.
-        return "TODO";
+        return status;
+    }
+
+    public Song getCurrentSong() {
+        return currentSong;
+    }
+
+    public double getVolume() {
+        return volume;
     }
 }
 
