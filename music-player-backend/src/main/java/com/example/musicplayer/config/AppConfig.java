@@ -31,19 +31,17 @@ public class AppConfig {
 
     @Bean
     public MusicDownloadAPI musicDownloadAPI() {
-        return new MusicDownloadAPI() {
-            @Override
-            public SongReference requestSongReference(String queryOrUrl) {
-                String normalizedQuery =
-                        (queryOrUrl == null || queryOrUrl.isBlank()) ? "unknown" : queryOrUrl.trim();
+        return this::createFallbackSongReference;
+    }
 
-                return new SongReference(
-                        normalizedQuery,
-                        "Unknown Artist",
-                        "https://source.test/" + normalizedQuery,
-                        "https://source.test/default-cover.jpg");
-            }
-        };
+    private SongReference createFallbackSongReference(String queryOrUrl) {
+        String normalizedQuery = (queryOrUrl == null || queryOrUrl.isBlank()) ? "unknown" : queryOrUrl.trim();
+
+        return new SongReference(
+                normalizedQuery,
+                "Unknown Artist",
+                "https://source.test/" + normalizedQuery,
+                "https://source.test/default-cover.jpg");
     }
 
     @Bean

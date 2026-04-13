@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -102,6 +103,37 @@ public class PlayerController {
                 request.getGenre());
         playerService.addSongToEnd(song);
         return "Song added to end";
+    }
+
+    @PostMapping("/songs/position/{position}")
+    public String addSongAtPosition(@RequestBody CreateSongRequest request, @PathVariable int position) {
+        Song song = new Song(
+                request.getId(),
+                request.getTitle(),
+                request.getDuration(),
+                request.getArtist(),
+                request.getSourceUrl(),
+                request.getCoverUrl(),
+                request.getGenre());
+        playerService.addSongToPosition(song, position);
+        return "Song added at position";
+    }
+
+    @DeleteMapping("/songs/position/{position}")
+    public String deleteSongAtPosition(@PathVariable int position) {
+        playerService.deleteSongAt(position);
+        return "Song deleted at position";
+    }
+
+    @PostMapping("/move")
+    public String moveSong(@RequestParam int from, @RequestParam int to) {
+        playerService.moveSong(from, to);
+        return "Song moved";
+    }
+
+    @PostMapping("/select/{position}")
+    public Song selectSong(@PathVariable int position) {
+        return playerService.selectSong(position);
     }
 
     @DeleteMapping("/songs/{songId}")
